@@ -7,14 +7,25 @@ import Head from '../components/common/header' ;
 import { ButtonLoginAction } from '../store/actions/action' ;
 import {connect} from 'react-redux';
 
+import * as firebase from 'firebase' ;
+import { Actions } from 'react-native-router-flux' ;
 
 class Login extends React.Component{
 constructor(){
     super() ;
     this.state = {
         email: "" ,
-        password: ""
+        password: "" ,
+        check: null ,
     }
+}
+
+componentDidMount() {
+    firebase.auth().onAuthStateChanged(function (user) {
+        if(firebase.auth().currentUser){
+            Actions.dashboard()
+        }
+    });
 }
 
 adddata(){
@@ -26,18 +37,11 @@ adddata(){
     } else{
         let user = { email, password }
         this.props.ButtonLoginAction(user)
-        this.setState({
-            email: '' ,
-            password: ''
-        })
     }
 }
 
-    render(){
-        
-        const { ErrorMessage , auth } = this.props;
-        
-        const { navigate } = this.props.navigation ;
+renderComponent(){
+        const { ErrorMessage } = this.props;
         const { input ,container ,button ,childcontainer ,textbutton, errorStyle } = styles
         return(
             <View>
@@ -70,7 +74,7 @@ adddata(){
                     borderRadius = {10}
                     containerViewStyle={{borderRadius:10}}
                     onPress={this.adddata.bind(this)} />
-                <TouchableOpacity style={textbutton} onPress={() => navigate('Signup')} >
+                <TouchableOpacity style={textbutton} onPress={() => Actions.Signup()} >
                     <Text>Don't have an Account?</Text>
                 </TouchableOpacity>
                 
@@ -85,17 +89,18 @@ adddata(){
                                 <Text></Text>
                             )}
                 </Text>
-                <View>
-                    {
-                      auth ? <Button
-                                title='Map'
-                                backgroundColor = 'blue'
-                                borderRadius = {10}
-                                containerViewStyle={{borderRadius:10}}
-                                onPress={() => navigate('Map')} /> : <View></View>
-                    }
-                </View>
            </View>
+        )
+}
+
+
+    render(){
+        return(
+            <View>
+                {
+                     this.renderComponent()
+                }
+            </View>
         )
     }
 }

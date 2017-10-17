@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { View ,Text, TouchableHighlight, StyleSheet } from 'react-native';
-
-export default List = ({name , seedetails= f => f }) => (
+// seedetails= f => f
+export default List = ({name}) => (
     <TouchableHighlight onPress={()=> seedetails(name)}  style={styles.btn} underlayColor='orange' >
                         <Text style= {styles.text} >{name.name}</Text>
     </TouchableHighlight>

@@ -1,5 +1,6 @@
 import * as firebase from 'firebase';
-import { Alert, ToastAndroid } from 'react-native';
+import { Alert, ToastAndroid, AsyncStorage } from 'react-native';
+import { Actions } from 'react-native-router-flux' ;
 
 export const SiginUpdate= 'SINGIN_UPDATE';
 export const ErrorMessages= 'ErrorMessages';
@@ -11,13 +12,17 @@ export function ButtonSignUpAction(userSignUp) {
         firebase.auth().createUserWithEmailAndPassword(userSignUp.email, userSignUp.password)
             .then((user) => {
                 let firebaseData = {
+                    name: userSignUp.name ,
                     email: userSignUp.email,
                     id: user.uid
                 };
-                firebase.database().ref('users/' + user.uid).set(firebaseData)
+
+                console.log(firebaseData)
+                firebase.database().ref('FamilyTracker/'+ user.uid).set(firebaseData)
                     .then(() => {
                         ToastAndroid.show('Account Created.', ToastAndroid.SHORT);
                         dispatch(ErrorMessageDispatch())
+                        Actions.Login() ;
                     });
             })
             .catch((error) => {
@@ -34,9 +39,11 @@ export function ButtonLoginAction(userlogin) {
         firebase.auth()
             .signInWithEmailAndPassword(userlogin.email, userlogin.password)
             .then((user) => {
+                console.log('LOgin')
                 ToastAndroid.show('Thanks For Login.', ToastAndroid.SHORT);
                 dispatch(signInUpdate(user));
                 dispatch(ErrorMessageDispatch1())
+                Actions.dashboard();
 
             })
             .catch((error) => {
@@ -46,22 +53,12 @@ export function ButtonLoginAction(userlogin) {
     }
 }
 
-// export function LogOutAction() {
-//     return dispatch => {
-//         firebase.auth().signOut()
-//             .then(() => {
-//                 // Sign-out successful.
-//                 dispatch(signInUpdate());
-//             })
-//             .catch((error) => {
-//                 var errorMessage = error.message;
-
-//             });
-
+// function UserDetails(data){
+//     return{
+//         type: 'UserDetails' ,
+//         data
 //     }
 // }
-
-
 
 function signInUpdate(payload) {
     return {

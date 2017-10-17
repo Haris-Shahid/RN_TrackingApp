@@ -7,6 +7,8 @@ import Head from '../components/common/header' ;
 import { ButtonSignUpAction } from '../store/actions/action' ;
 import {connect} from 'react-redux';
 
+import { Actions } from 'react-native-router-flux' ;
+
 class Signup extends React.Component{
 constructor(){
     super() ;
@@ -29,18 +31,11 @@ adddata(){
     } else{
         let user = { name, email, password }
         this.props.ButtonSignUpAction(user)
-        this.setState({
-            name: '' ,
-            email: '' ,
-            password: ''
-        })
     }
 }
 
     render(){
         const { ErrorMessage } = this.props;
-
-        const { navigate } = this.props.navigation ;
         const { input ,container ,button ,childcontainer ,textbutton, errorStyle } = styles
         return(
             <View>
@@ -82,7 +77,7 @@ adddata(){
                             borderRadius = {10}
                             containerViewStyle={{borderRadius:10}}
                             onPress={this.adddata.bind(this)} />
-                        <TouchableOpacity style={textbutton} onPress={() => navigate('Login')} >
+                        <TouchableOpacity style={textbutton} onPress={() => Actions.Login()} >
                             <Text>Already have an Account?</Text>
                         </TouchableOpacity>
                </View>
