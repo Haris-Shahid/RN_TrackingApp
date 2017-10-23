@@ -29,7 +29,7 @@ class CreateCircle extends Component{
         }
         firebase.database().ref('Circle/' + key).set(circle).then(()=>{
             this.setState({loading: false })
-            alert('user is added')
+            alert('Circle created')
         })
         
     }

@@ -8,7 +8,8 @@ class Circle extends Component {
       super() ;
       this.state = {
           circleList: [],
-          loading: true
+          loading: true ,
+          availCircle: [] ,
       }
       
   }
@@ -23,14 +24,75 @@ class Circle extends Component {
             circleList ,
             loading: false
         })
-     
+        this.check();
+        // this.check();
     })
-    
+    this.setState({
+        loading: false
+    })    
+    firebase.database().ref('Circle/').on('child_changed' ,(snap) => {
+        firebase.database().ref('Circle/').on('value' ,(snap) => {
+           var circleList = this.state.circleList ;
+             circleList=[] ;
+            var obj = snap.val() ;
+            // console.log(obj)
+            for (var key in obj) {
+              circleList.push(obj[key])
+            }
+            console.log('hello',circleList)
+                      this.setState({
+                          circleList
+                      }, ()=> {
+                          console.log('stateupdates')
+                      })
+                      this.check();
+
+            // var circleList = this.state.circleList ;
+            // circleList.push(obj) ;
+            // this.setState({
+            //     circleList ,
+            //     // loading: false
+            // })
+            // this.check();
+            // this.check();
+        })
+          
+        
+        // var obj = snap.val() ;
+        // console.log('object', snap.val() )
+    })
+}
+  
+  check(){
+    //   const { availCircle } = this.state ;
+    var availCircle = [] ;
+     let admin = firebase.auth().currentUser.uid ;
+      this.state.circleList.map( (memkey , i) => {
+            // console.log(memkey);
+            var a = memkey.members.indexOf(admin) ;
+            if( a === -1 ){
+                // console.log("Not a Member")
+
+            }else{
+                // console.log('you are a member', memkey)
+                availCircle.push(memkey) ;
+                this.setState({
+                    availCircle
+                })
+            }
+      })
+
+    //   console.log('details', this.state.circleList , admin)
+    // this.state.circleList.map((mem , i ) => {
+    //     mem.members.map((v , i) => {
+    //         console.log(v)
+    //     })
+    // })
   }
   
-  
     render() {
-        // console.log('final' , this.state.circleList)
+        // console.log('final' , this.state.availCircle)
+        const { availCircle } = this.state ;
         return(
             <Container>
                 <Content>
@@ -45,7 +107,7 @@ class Circle extends Component {
                 <List>
                     {
                         this.state.loading ? <Spinner color='red' /> :
-                        this.state.circleList.map((li, i) => {
+                        availCircle.map((li, i) => {
                            return( 
                                <ListItem key={i} >
                                     <Icon name='person' />

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Container, Card, CardItem, Content, Spinner, Text, Item, Icon, Body, Input, Button, ListItem, List, Right, } from 'native-base';
+import { Col, Row, Grid } from 'react-native-easy-grid';
 import { Dimensions } from 'react-native';
 import * as firebase from 'firebase';
 import { Actions } from 'react-native-router-flux';
@@ -12,11 +13,11 @@ class Members extends Component {
         this.state = {
             members: [],
             groupKey: '',
-            rndmno: '',
+            rndmno: '', 
             loading: true,
         }
     }
-
+    
     componentWillMount() {
         this.setState({
             groupKey: this.props.key1,
@@ -26,23 +27,21 @@ class Members extends Component {
         this.props.members.map((v, i) => {
             firebase.database().ref('FamilyTracker/' + v).on('value', (snap) => {
                 const keys = snap.val()
-                console.log(keys, 'swkefh'    )
                 arr.push(snap.val())
-                    this.setState({
+                this.setState({
                     members: arr,
                     loading: false,
                 })
-                this.groupid();
             })
-            // .then(() => {
-            // })
         });
-    }
+}
 
-    groupid() {
+    groupid(x) {
+        // console.log(this.state.groupKey)
         var gk = this.state.groupKey;
         var gkl = this.state.groupKey.length;
-        var res = gk.slice(1, 7);
+        var g = x + 5 ;
+        var res = gk.slice( x , g );
         this.setState({
             rndmno: res
         })
@@ -51,6 +50,7 @@ class Members extends Component {
 
     render() {
         const { members } = this.state ;
+        // console.log(this.state.groupKey)
         return (
             <Container style={{ flex: 1, backgroundColor: 'white', alignItems: 'center', }} >
                 
@@ -66,10 +66,26 @@ class Members extends Component {
                                 )
                             })
                     }
-                <Text style={{ fontSize: 23, color: 'gray', opacity: .5 ,paddingLeft: 30 }} >Type {this.state.rndmno} To Join Group</Text>
-                <Button block onPress={()=> Actions.membersinmap({members}) } >
-                    <Text>Go To Map</Text>
-                </Button>
+                     
+                <Grid>
+                    <Row style={{height: 50 }} >
+                        <Col style={{alignItems: 'center',}} >
+                            <Text style={{ fontSize: 23, color: 'gray', opacity: .5 ,}} >{this.state.rndmno}</Text>
+                        </Col>
+                    </Row>
+                    <Row style={{height: 50 }}>
+                        <Col>
+                            <Button success rounded block onPress={()=> Actions.membersinmap({members})} >
+                                <Text>Go To Map</Text>
+                            </Button>
+                        </Col>
+                        <Col>
+                            <Button info rounded block onPress={()=> this.groupid(Math.floor((Math.random() * 10)+ 8))} >
+                                <Text>Generate Key</Text>
+                            </Button>
+                        </Col>
+                    </Row>
+                </Grid>
                 </Card>
                 
             </Container>

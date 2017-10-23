@@ -49,8 +49,8 @@ export default class Map extends Component {
           longitude ,
         });
       },
-    (error) => console.warn(error.message),
-    { enableHighAccuracy: false , timeout: 20000, maximumAge: 1000 },
+    (error) => console.log(error.message),
+    { enableHighAccuracy: true , timeout: 20000, maximumAge: 1000 },
     );
   }
   

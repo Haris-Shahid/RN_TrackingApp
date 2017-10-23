@@ -41,7 +41,7 @@ export default class Map extends Component {
         });
       },
     (error) => console.warn(error.message),
-    { enableHighAccuracy: false , timeout: 20000, maximumAge: 1000 },
+    { enableHighAccuracy: true , timeout: 20000, maximumAge: 1000 },
     );
   }
 
@@ -70,7 +70,7 @@ export default class Map extends Component {
                                latitudeDelta: LATITUDE_DELTA,
                                longitudeDelta: LONGITUDE_DELTA,
                                }}
-                >
+               title = { map.name } >
                 </MapView.Marker>
               )
             })
